@@ -737,17 +737,11 @@ export default function BibliotecaDigital() {
 
       {/* Header */}
       <div className="px-4 pt-12 pb-4" style={{ backgroundColor: '#00407a' }}>
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-white">Acervo</h1>
-          <button
-            onClick={() => setShowMenu(true)}
-            className="p-2 bg-white bg-opacity-20 rounded-lg"
-          >
-            <Menu size={22} className="text-white" />
-          </button>
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-white text-center">Acervo</h1>
         </div>
 
-        {/* Filtros + View mode */}
+        {/* Filtros + Menu */}
         <div className="flex gap-2 mb-3">
           <button
             onClick={() => setShowFiltros(!showFiltros)}
@@ -756,14 +750,10 @@ export default function BibliotecaDigital() {
             <Filter size={16} fill={temFiltrosAtivos ? 'white' : 'none'} /> Filtros
           </button>
           <button
-            onClick={toggleViewMode}
-            className="p-2 px-4 rounded-lg bg-white bg-opacity-20 flex items-center gap-2 text-white text-sm"
+            onClick={() => setShowMenu(true)}
+            className="p-2 px-4 rounded-lg bg-white bg-opacity-20"
           >
-            {(() => {
-              const ViewIcon = viewModeConfig[viewMode].icon;
-              return <ViewIcon size={18} />;
-            })()}
-            <span className="hidden sm:inline">{viewModeConfig[viewMode].label}</span>
+            <Menu size={18} className="text-white" />
           </button>
         </div>
 
@@ -849,7 +839,7 @@ export default function BibliotecaDigital() {
             </div>
             <div className="p-4 border-t text-center" style={{ borderColor: themeColors.border }}>
               <span className="text-xs" style={{ color: themeColors.textSecondary }}>v1.0.0</span>
-              <div className="text-xs mt-1" style={{ color: themeColors.textSecondary }}>Todos os direitos reservados | Leonardo Rejani</div>
+              <div className="text-xs mt-1" style={{ color: themeColors.textSecondary }}>Todos os direitos reservados</div>
             </div>
           </div>
         </div>
@@ -882,6 +872,18 @@ export default function BibliotecaDigital() {
       {/* Content */}
       <div className="flex-1 relative overflow-x-hidden">
         <div ref={listRef} className={`h-full overflow-y-auto px-4 py-4 ${densidadeClasses[config.densidade]}`}>
+        {/* Seletor de Modo de Visualização */}
+        <button
+          onClick={toggleViewMode}
+          className="w-full py-2 px-3 mb-3 text-sm font-semibold text-white rounded-lg flex items-center justify-center gap-2"
+          style={{ backgroundColor: '#00407a' }}
+        >
+          {(() => {
+            const ViewIcon = viewModeConfig[viewMode].icon;
+            return <ViewIcon size={18} />;
+          })()}
+          <span>{viewModeConfig[viewMode].label}</span>
+        </button>
         {livrosFiltrados.length === 0 ? (
           <div className="text-center py-12" style={{ color: themeColors.textSecondary }}>
             {searchTerm || temFiltrosAtivos ? 'Nenhum livro encontrado com esses filtros' : 'Adicione seu primeiro livro'}
@@ -966,37 +968,38 @@ export default function BibliotecaDigital() {
                 PRATELEIRAS
               </h2>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {Object.entries(livrosPorPrateleira).sort().map(([prateleira, livrosDaPrateleira]) => {
-                const pratLetra = prateleira.replace('PRATELEIRA ', '').charAt(0);
-                return (
-                  <div key={prateleira} id={`section-prat-${pratLetra}`} className="flex flex-col">
-                    <button
-                      onClick={() => toggleSection(`prat-${prateleira}`)}
-                      className="p-4 rounded-lg text-center font-bold transition-all hover:scale-105 hover:shadow-lg"
-                      style={{ backgroundColor: themeColors.card, border: `2px solid #00407a`, color: themeColors.text }}
-                    >
-                      <div className="text-2xl" style={{ color: '#00407a' }}>{pratLetra}</div>
-                      <div className="text-xs mt-1" style={{ color: themeColors.textSecondary }}>{livrosDaPrateleira.length} livros</div>
-                      <ChevronDown size={14} className={`mx-auto mt-1 transition-transform ${expandedSections[`prat-${prateleira}`] ? 'rotate-180' : ''}`} style={{ color: '#00407a' }} />
-                    </button>
-                    {expandedSections[`prat-${prateleira}`] && (
-                      <div className="mt-2 space-y-1 col-span-full">
-                        {livrosDaPrateleira.map(livro => (
-                          <LivroCard
-                            key={livro.id}
-                            livro={livro}
-                            onClick={setDetalheLivro}
-                            statusConfig={statusConfig}
-                            themeColors={themeColors}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+            {Object.entries(livrosPorPrateleira).sort().map(([prateleira, livrosDaPrateleira]) => {
+              const pratLetra = prateleira.replace('PRATELEIRA ', '').charAt(0);
+              const isExpanded = expandedSections[`prat-${prateleira}`];
+              return (
+                <div key={prateleira} id={`section-prat-${pratLetra}`} className="mb-3">
+                  <button
+                    onClick={() => toggleSection(`prat-${prateleira}`)}
+                    className="w-full py-2 px-3 text-sm font-semibold text-white shadow-md rounded-lg flex items-center justify-between"
+                    style={{ backgroundColor: '#00407a' }}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span>{pratLetra}</span>
+                      <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{livrosDaPrateleira.length} livros</span>
+                    </div>
+                    <ChevronDown size={16} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                  </button>
+                  {isExpanded && (
+                    <div className="mt-2 space-y-1">
+                      {livrosDaPrateleira.map(livro => (
+                        <LivroCard
+                          key={livro.id}
+                          livro={livro}
+                          onClick={setDetalheLivro}
+                          statusConfig={statusConfig}
+                          themeColors={themeColors}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
         </div>
@@ -1047,9 +1050,8 @@ export default function BibliotecaDigital() {
       </div>
 
       {/* Footer */}
-      <div className="flex-shrink-0 px-4 py-2 border-t text-center text-xs" style={{ backgroundColor: themeColors.bgSecondary, borderColor: themeColors.border, color: themeColors.textSecondary }}>
+      <div className="flex-shrink-0 px-4 pt-2 border-t text-center text-xs" style={{ backgroundColor: themeColors.bgSecondary, borderColor: themeColors.border, color: themeColors.textSecondary, paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}>
         <div className="whitespace-nowrap overflow-hidden text-ellipsis">{livros.length} livros | {prateleirasUnicas.length} prateleiras | {livros.filter(l => l.status === 'emprestado').length} emprestados{livrosFiltrados.length !== livros.length ? ` | Exibindo ${livrosFiltrados.length}` : ''}</div>
-        <div className="mt-1">Leonardo Rejani</div>
       </div>
 
       {/* Modal Add/Edit */}
