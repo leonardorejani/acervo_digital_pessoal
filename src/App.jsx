@@ -891,7 +891,7 @@ export default function BibliotecaDigital() {
           </div>
         ) : viewMode === 'lista' ? (
           // LISTA COM ALFABETO
-          <div className="pr-5">
+          <div className="pr-5 pb-24">
             {Object.keys(groupedByLetter).sort().map(letter => (
               <div key={letter} id={`section-lista-${letter}`} className="mb-2">
                 <button
@@ -927,7 +927,7 @@ export default function BibliotecaDigital() {
           </div>
         ) : viewMode === 'grid' ? (
           // GRID - Livros soltos com capas, barra azul entre prateleiras
-          <div className="pr-5">
+          <div className="pr-5 pb-24">
             {Object.entries(livrosPorPrateleira).sort().map(([prateleira, livrosDaPrateleira], pratIndex) => {
               const pratLetra = prateleira.replace('PRATELEIRA ', '').charAt(0);
               return (
@@ -957,7 +957,7 @@ export default function BibliotecaDigital() {
           </div>
         ) : (
           // PRATELEIRA - Visão geral com retângulos
-          <div className="pr-5">
+          <div className="pr-5 pb-24">
             {Object.entries(livrosPorPrateleira).sort().map(([prateleira, livrosDaPrateleira]) => {
               const pratLetra = prateleira.replace('PRATELEIRA ', '').charAt(0);
               const isExpanded = expandedSections[`prat-${prateleira}`];
