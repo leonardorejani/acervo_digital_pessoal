@@ -740,7 +740,7 @@ export default function BibliotecaDigital() {
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} key={toast.key} />}
 
       {/* Header */}
-      <div className="px-4 pt-12 pb-4" style={{ backgroundColor: '#00407a' }}>
+      <div className="px-4 pt-16 pb-4" style={{ backgroundColor: '#00407a' }}>
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold text-white">Acervo</h1>
           <button
@@ -896,14 +896,14 @@ export default function BibliotecaDigital() {
               <div key={letter} id={`section-lista-${letter}`} className="mb-2">
                 <button
                   onClick={() => toggleSection(`lista-${letter}`)}
-                  className="w-full py-2 px-3 text-sm font-semibold text-white shadow-md rounded-lg flex items-center justify-between"
+                  className="w-full py-3 px-3 text-sm font-semibold text-white shadow-md rounded-lg flex items-center justify-between"
                   style={{ backgroundColor: '#00407a' }}
                 >
                   <div className="flex items-center gap-2">
-                    <span>{letter}</span>
-                    <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{groupedByLetter[letter].length}</span>
+                    <span>Inicial</span>
+                    <span className="px-2 py-1 rounded-md text-sm font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>"{letter}"</span>
                   </div>
-                  <ChevronDown size={16} className={`transition-transform ${expandedSections[`lista-${letter}`] ? 'rotate-180' : ''}`} />
+                  <span className="px-2 py-1 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{groupedByLetter[letter].length} livros</span>
                 </button>
                 {expandedSections[`lista-${letter}`] && (
                   <div className={`mt-1 ${densidadeClasses[config.densidade]}`}>
@@ -932,21 +932,16 @@ export default function BibliotecaDigital() {
               const pratLetra = prateleira.replace('PRATELEIRA ', '').charAt(0);
               return (
               <div key={prateleira} id={`section-grid-${pratLetra}`}>
-                {/* Barra azul separadora - clicável para toggle */}
-                <button
-                  onClick={() => toggleSection(`grid-${prateleira}`)}
-                  className="w-full py-2 px-3 text-sm font-semibold text-white flex items-center justify-between mb-3 rounded-lg"
+                {/* Barra azul separadora */}
+                <div
+                  className="w-full py-3 px-3 text-sm font-semibold text-white flex items-center justify-between mb-3 rounded-lg"
                   style={{ backgroundColor: '#00407a', marginTop: pratIndex > 0 ? '16px' : '0' }}
                 >
                   <span>{prateleira}</span>
-                  <div className="flex items-center gap-2">
-                    <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{livrosDaPrateleira.length}</span>
-                    <ChevronDown size={16} className={`transition-transform ${expandedSections[`grid-${prateleira}`] ? 'rotate-180' : ''}`} />
-                  </div>
-                </button>
-                {/* Grid de capas - colapsável */}
-                {expandedSections[`grid-${prateleira}`] && (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 pb-2">
+                  <span className="px-2 py-1 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{livrosDaPrateleira.length} livros</span>
+                </div>
+                {/* Grid de capas - sempre visível */}
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 pb-2">
                     {livrosDaPrateleira.map(livro => (
                       <LivroCardGrid
                         key={livro.id}
@@ -956,19 +951,13 @@ export default function BibliotecaDigital() {
                         themeColors={themeColors}
                       />
                     ))}
-                  </div>
-                )}
+                </div>
               </div>
             ); })}
           </div>
         ) : (
           // PRATELEIRA - Visão geral com retângulos
           <div className="pr-5">
-            <div className="text-center mb-6">
-              <h2 className="text-xl font-bold py-3 px-6 inline-block rounded-lg" style={{ backgroundColor: '#00407a', color: 'white' }}>
-                PRATELEIRAS
-              </h2>
-            </div>
             {Object.entries(livrosPorPrateleira).sort().map(([prateleira, livrosDaPrateleira]) => {
               const pratLetra = prateleira.replace('PRATELEIRA ', '').charAt(0);
               const isExpanded = expandedSections[`prat-${prateleira}`];
@@ -976,7 +965,7 @@ export default function BibliotecaDigital() {
                 <div key={prateleira} id={`section-prat-${pratLetra}`} className="mb-3">
                   <button
                     onClick={() => toggleSection(`prat-${prateleira}`)}
-                    className="w-full py-2 px-3 text-sm font-semibold text-white shadow-md rounded-lg flex items-center justify-between"
+                    className="w-full py-3 px-3 text-sm font-semibold text-white shadow-md rounded-lg flex items-center justify-between"
                     style={{ backgroundColor: '#00407a' }}
                   >
                     <div className="flex items-center gap-2">
