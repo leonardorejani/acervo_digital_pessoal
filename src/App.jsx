@@ -739,8 +739,11 @@ export default function BibliotecaDigital() {
       {/* Toast */}
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} key={toast.key} />}
 
+      {/* Safe Area Spacer - iOS status bar */}
+      <div className="flex-shrink-0" style={{ backgroundColor: '#00407a', paddingTop: 'max(env(safe-area-inset-top), 20px)' }} />
+
       {/* Header */}
-      <div className="px-4 pb-4" style={{ backgroundColor: '#00407a', paddingTop: 'calc(env(safe-area-inset-top, 0px) + 16px)' }}>
+      <div className="px-4 pt-4 pb-4 flex-shrink-0" style={{ backgroundColor: '#00407a' }}>
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-3xl font-bold text-white">Acervo</h1>
           <button
