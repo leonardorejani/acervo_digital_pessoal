@@ -64,6 +64,8 @@ const PRATELEIRAS_PREDEFINIDAS = [
   "PRATELEIRA O",
   "PRATELEIRA P",
   "PRATELEIRA Q",
+  "PRATELEIRA R",
+  "PRATELEIRA S",
   "PRATELEIRA T",
   "PRATELEIRA U",
   "PRATELEIRA V"
@@ -927,26 +929,32 @@ export default function BibliotecaDigital() {
               const pratLetra = prateleira.replace('PRATELEIRA ', '').charAt(0);
               return (
               <div key={prateleira} id={`section-grid-${pratLetra}`}>
-                {/* Barra azul separadora */}
-                <div
-                  className="py-2 px-3 text-sm font-semibold text-white flex items-center justify-between mb-3"
+                {/* Barra azul separadora - clicável para toggle */}
+                <button
+                  onClick={() => toggleSection(`grid-${prateleira}`)}
+                  className="w-full py-2 px-3 text-sm font-semibold text-white flex items-center justify-between mb-3 rounded-lg"
                   style={{ backgroundColor: '#00407a', marginTop: pratIndex > 0 ? '16px' : '0' }}
                 >
                   <span>{prateleira}</span>
-                  <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{livrosDaPrateleira.length}</span>
-                </div>
-                {/* Grid de capas */}
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 pb-2">
-                  {livrosDaPrateleira.map(livro => (
-                    <LivroCardGrid
-                      key={livro.id}
-                      livro={livro}
-                      onClick={setDetalheLivro}
-                      statusConfig={statusConfig}
-                      themeColors={themeColors}
-                    />
-                  ))}
-                </div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{livrosDaPrateleira.length}</span>
+                    <ChevronDown size={16} className={`transition-transform ${expandedSections[`grid-${prateleira}`] ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
+                {/* Grid de capas - colapsável */}
+                {expandedSections[`grid-${prateleira}`] && (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 pb-2">
+                    {livrosDaPrateleira.map(livro => (
+                      <LivroCardGrid
+                        key={livro.id}
+                        livro={livro}
+                        onClick={setDetalheLivro}
+                        statusConfig={statusConfig}
+                        themeColors={themeColors}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             ); })}
           </div>
@@ -962,19 +970,30 @@ export default function BibliotecaDigital() {
               {Object.entries(livrosPorPrateleira).sort().map(([prateleira, livrosDaPrateleira]) => {
                 const pratLetra = prateleira.replace('PRATELEIRA ', '').charAt(0);
                 return (
-                  <button
-                    key={prateleira}
-                    id={`section-prat-${pratLetra}`}
-                    onClick={() => {
-                      setFiltros({...filtros, prateleira: prateleira});
-                      setViewMode('lista');
-                    }}
-                    className="p-4 rounded-lg text-center font-bold transition-all hover:scale-105 hover:shadow-lg"
-                    style={{ backgroundColor: themeColors.card, border: `2px solid #00407a`, color: themeColors.text }}
-                  >
-                    <div className="text-2xl" style={{ color: '#00407a' }}>{pratLetra}</div>
-                    <div className="text-xs mt-1" style={{ color: themeColors.textSecondary }}>{livrosDaPrateleira.length} livros</div>
-                  </button>
+                  <div key={prateleira} id={`section-prat-${pratLetra}`} className="flex flex-col">
+                    <button
+                      onClick={() => toggleSection(`prat-${prateleira}`)}
+                      className="p-4 rounded-lg text-center font-bold transition-all hover:scale-105 hover:shadow-lg"
+                      style={{ backgroundColor: themeColors.card, border: `2px solid #00407a`, color: themeColors.text }}
+                    >
+                      <div className="text-2xl" style={{ color: '#00407a' }}>{pratLetra}</div>
+                      <div className="text-xs mt-1" style={{ color: themeColors.textSecondary }}>{livrosDaPrateleira.length} livros</div>
+                      <ChevronDown size={14} className={`mx-auto mt-1 transition-transform ${expandedSections[`prat-${prateleira}`] ? 'rotate-180' : ''}`} style={{ color: '#00407a' }} />
+                    </button>
+                    {expandedSections[`prat-${prateleira}`] && (
+                      <div className="mt-2 space-y-1 col-span-full">
+                        {livrosDaPrateleira.map(livro => (
+                          <LivroCard
+                            key={livro.id}
+                            livro={livro}
+                            onClick={setDetalheLivro}
+                            statusConfig={statusConfig}
+                            themeColors={themeColors}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
