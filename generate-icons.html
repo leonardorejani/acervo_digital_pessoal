@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Gerador de Ícones - Biblioteca Digital</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 40px; text-align: center; background: #f5f5f5; }
+    h1 { color: #00407a; }
+    .icons { display: flex; gap: 20px; justify-content: center; margin: 30px 0; flex-wrap: wrap; }
+    .icon-box { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    canvas { border: 1px solid #ddd; border-radius: 8px; }
+    button { background: #00407a; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 16px; margin: 10px; }
+    button:hover { background: #003366; }
+    .instructions { max-width: 600px; margin: 30px auto; text-align: left; background: white; padding: 20px; border-radius: 12px; }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Gerador de Ícones PWA</h1>
+  <p>Clique nos botões para baixar os ícones necessários para a PWA.</p>
+
+  <div class="icons">
+    <div class="icon-box">
+      <h3>192x192</h3>
+      <canvas id="canvas192" width="192" height="192"></canvas>
+      <br>
+      <button onclick="download('canvas192', 'icon-192.png')">Baixar icon-192.png</button>
+    </div>
+    <div class="icon-box">
+      <h3>512x512</h3>
+      <canvas id="canvas512" width="512" height="512"></canvas>
+      <br>
+      <button onclick="download('canvas512', 'icon-512.png')">Baixar icon-512.png</button>
+    </div>
+  </div>
+
+  <div class="instructions">
+    <h3>Instruções:</h3>
+    <ol>
+      <li>Clique em cada botão para baixar o ícone correspondente</li>
+      <li>Mova os arquivos para a pasta <code>public/</code> do projeto</li>
+      <li>Também copie <code>icon-192.png</code> como <code>favicon.ico</code></li>
+    </ol>
+  </div>
+
+  <script>
+    function drawIcon(ctx, size) {
+      // Background
+      ctx.fillStyle = '#00407a';
+      roundRect(ctx, 0, 0, size, size, size * 0.125);
+      ctx.fill();
+
+      // Book
+      const scale = size / 512;
+      ctx.save();
+      ctx.translate(96 * scale, 80 * scale);
+
+      // Left page
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.beginPath();
+      ctx.moveTo(160 * scale, 0);
+      ctx.lineTo(160 * scale, 320 * scale);
+      ctx.lineTo(0, 280 * scale);
+      ctx.lineTo(0, 40 * scale);
+      ctx.closePath();
+      ctx.fill();
+
+      // Right page
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath();
+      ctx.moveTo(160 * scale, 0);
+      ctx.lineTo(160 * scale, 320 * scale);
+      ctx.lineTo(320 * scale, 280 * scale);
+      ctx.lineTo(320 * scale, 40 * scale);
+      ctx.closePath();
+      ctx.fill();
+
+      // Spine
+      ctx.fillStyle = '#4fc3f7';
+      ctx.fillRect(155 * scale, 0, 10 * scale, 320 * scale);
+
+      // Lines on left page
+      ctx.strokeStyle = 'rgba(0,64,122,0.3)';
+      ctx.lineWidth = 8 * scale;
+      ctx.lineCap = 'round';
+
+      [[30, 80, 130, 90], [30, 120, 130, 130], [30, 160, 130, 170]].forEach(([x1, y1, x2, y2]) => {
+        ctx.beginPath();
+        ctx.moveTo(x1 * scale, y1 * scale);
+        ctx.lineTo(x2 * scale, y2 * scale);
+        ctx.stroke();
+      });
+
+      // Lines on right page
+      [[190, 90, 290, 80], [190, 130, 290, 120]].forEach(([x1, y1, x2, y2]) => {
+        ctx.beginPath();
+        ctx.moveTo(x1 * scale, y1 * scale);
+        ctx.lineTo(x2 * scale, y2 * scale);
+        ctx.stroke();
+      });
+
+      ctx.restore();
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    function download(canvasId, filename) {
+      const canvas = document.getElementById(canvasId);
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // Draw icons on load
+    window.onload = function() {
+      const ctx192 = document.getElementById('canvas192').getContext('2d');
+      const ctx512 = document.getElementById('canvas512').getContext('2d');
+      drawIcon(ctx192, 192);
+      drawIcon(ctx512, 512);
+    };
+  </script>
+</body>
+</html>
