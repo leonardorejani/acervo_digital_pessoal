@@ -785,7 +785,7 @@ export default function BibliotecaDigital() {
 
         {/* Filtros expandidos */}
         {showFiltros && (
-          <div className="mt-3 space-y-2 bg-white bg-opacity-10 p-3 rounded-lg">
+          <div className="mt-3 space-y-2 bg-white bg-opacity-10 p-3 rounded-lg animate-fade-in">
             <button
               onClick={() => setFiltros({...filtros, favorito: !filtros.favorito})}
               className="w-full p-2 rounded text-sm font-medium flex items-center justify-center gap-2 transition"
@@ -826,7 +826,7 @@ export default function BibliotecaDigital() {
       {showMenu && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => setShowMenu(false)} />
-          <div className="relative w-80 rounded-xl shadow-xl flex flex-col overflow-hidden" style={{ backgroundColor: themeColors.bgSecondary }}>
+          <div className="relative w-80 rounded-xl shadow-xl flex flex-col overflow-hidden animate-slide-up" style={{ backgroundColor: themeColors.bgSecondary }}>
             <div className="flex items-center justify-between p-4 border-b" style={{ borderColor: themeColors.border }}>
               <span className="font-bold text-lg" style={{ color: themeColors.text }}>Menu</span>
               <button onClick={() => setShowMenu(false)} className="p-1">
@@ -869,7 +869,7 @@ export default function BibliotecaDigital() {
           <ChevronDown size={14} className={`transition-transform ${showAcoes ? 'rotate-180' : ''}`} />
         </button>
         {showAcoes && (
-          <div className="px-4 pb-3 flex gap-2">
+          <div className="px-4 pb-3 flex gap-2 animate-fade-in">
             {livros.length > 0 && (
               <button onClick={() => setShowDeleteMultipleModal(true)} className="px-3 py-3 rounded-lg bg-red-500 text-white font-medium flex items-center gap-1">
                 <Trash2 size={18} />
@@ -980,7 +980,11 @@ export default function BibliotecaDigital() {
                         <LivroCard
                           key={livro.id}
                           livro={livro}
-                          onClick={setDetalheLivro}
+                          onEdit={startEdit}
+                          onToggleFavorito={toggleFavorito}
+                          onEmprestar={iniciarEmprestimo}
+                          onShowHistorico={(l) => { setHistoricoLivro(l); setShowHistoricoModal(true); }}
+                          onShowNotas={(l) => { setSelectedLivroNotas(l); setShowNotasModal(true); }}
                           statusConfig={statusConfig}
                           themeColors={themeColors}
                         />
@@ -1656,7 +1660,7 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
   const status = statusConfig[livro.status] || statusConfig['nao-lido'];
 
   return (
-    <div className="relative rounded-lg shadow-sm p-4 transition hover:shadow-lg hover:-translate-y-1 active:scale-[0.98]" style={{ backgroundColor: altBg ? themeColors.cardAlt : themeColors.card }}>
+    <div className="relative rounded-lg shadow-sm p-4 transition" style={{ backgroundColor: altBg ? themeColors.cardAlt : themeColors.card }}>
       <div className="flex gap-3">
         {livro.capaUrl && !compact && (
           <img src={livro.capaUrl} alt={livro.titulo} className="w-16 h-24 object-cover rounded shadow-sm flex-shrink-0" />
@@ -1671,7 +1675,7 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
               {livro.editora && <p className="text-xs" style={{ color: themeColors.textSecondary }}>{livro.editora}</p>}
             </div>
             <div className="flex gap-1 flex-shrink-0">
-              <button onClick={() => onToggleFavorito(livro.id)} className="p-2 rounded hover:scale-110 active:scale-125 transition-transform">
+              <button onClick={() => onToggleFavorito(livro.id)} className="p-2 rounded active:animate-pulse-once transition-transform">
                 <Heart size={16} fill={livro.favorito ? 'red' : 'none'} className={livro.favorito ? 'text-red-500' : 'text-gray-400'} />
               </button>
               <button onClick={() => onEdit(livro)} className="p-2 rounded">
@@ -1728,10 +1732,10 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
           )}
         </div>
       </div>
-      {/* Tag de prateleira - entalhe inferior esquerdo */}
+      {/* Tag de prateleira - entalhe inferior direito */}
       {livro.prateleira && (
-        <div className="absolute bottom-0 left-0">
-          <div className="text-xs font-bold px-2 py-1 rounded-tr-lg" style={{ backgroundColor: '#00407a', color: 'white' }}>
+        <div className="absolute bottom-0 right-0">
+          <div className="text-xs font-bold px-2 py-1 rounded-tl-lg" style={{ backgroundColor: '#00407a', color: 'white' }}>
             {livro.prateleira.replace('PRATELEIRA ', '')}
           </div>
         </div>
@@ -1746,7 +1750,7 @@ function LivroCardGrid({ livro, onClick, statusConfig, themeColors }) {
 
   return (
     <div
-      className="rounded-lg shadow-sm overflow-hidden transition cursor-pointer hover:scale-105 hover:shadow-xl"
+      className="rounded-lg shadow-sm overflow-hidden transition cursor-pointer"
       style={{ backgroundColor: themeColors.card }}
       onClick={() => onClick(livro)}
     >
