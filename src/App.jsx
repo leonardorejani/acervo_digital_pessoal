@@ -1014,8 +1014,8 @@ export default function BibliotecaDigital() {
 
           return (
             <div
-              className="absolute right-0 top-0 bottom-0 flex flex-col items-center justify-center z-40 px-1 select-none"
-              style={{ touchAction: 'pan-y' }}
+              className="absolute right-0 top-0 bottom-0 flex flex-col items-center justify-center z-40 px-1 select-none pointer-events-auto"
+              style={{ touchAction: 'none' }}
               onTouchMove={handleTouchMove}
               onTouchStart={(e) => {
                 const touch = e.touches[0];
@@ -1575,15 +1575,15 @@ export default function BibliotecaDigital() {
             <div className="flex gap-3 w-full mt-2">
               <button
                 onClick={() => { toggleFavorito(detalheLivro.id); setDetalheLivro({...detalheLivro, favorito: !detalheLivro.favorito}); }}
-                className="flex-1 py-3 border rounded-lg font-medium flex items-center justify-center gap-2 transition"
+                className="flex-1 py-3 border rounded-lg font-medium flex items-center justify-center gap-2 transition active:scale-95"
                 style={{ borderColor: themeColors.border, color: themeColors.text }}
               >
-                <Heart size={18} fill={detalheLivro.favorito ? 'red' : 'none'} className={detalheLivro.favorito ? 'text-red-500' : 'text-gray-400'} />
+                <Heart size={18} fill={detalheLivro.favorito ? 'red' : 'none'} className={`${detalheLivro.favorito ? 'text-red-500' : 'text-gray-400'} hover:scale-110 active:scale-125 transition-transform`} />
                 {detalheLivro.favorito ? 'Favoritado' : 'Favoritar'}
               </button>
               <button
                 onClick={() => { setDetalheLivro(null); startEdit(detalheLivro); }}
-                className="flex-1 py-3 rounded-lg text-white font-medium flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-lg text-white font-medium flex items-center justify-center gap-2 active:scale-95 transition-transform"
                 style={{ backgroundColor: '#00407a' }}
               >
                 <Edit2 size={18} /> Editar
@@ -1592,7 +1592,7 @@ export default function BibliotecaDigital() {
             {detalheLivro.status !== 'emprestado' && (
               <button
                 onClick={() => { setDetalheLivro(null); iniciarEmprestimo(detalheLivro); }}
-                className="w-full mt-2 py-3 bg-yellow-100 text-yellow-700 rounded-lg font-medium flex items-center justify-center gap-2 transition"
+                className="w-full mt-2 py-3 bg-yellow-100 text-yellow-700 rounded-lg font-medium flex items-center justify-center gap-2 transition active:scale-95"
               >
                 <BookOpen size={18} /> Emprestei pra alguém
               </button>
@@ -1656,7 +1656,7 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
   const status = statusConfig[livro.status] || statusConfig['nao-lido'];
 
   return (
-    <div className="rounded-lg shadow-sm p-4 transition" style={{ backgroundColor: altBg ? themeColors.cardAlt : themeColors.card }}>
+    <div className="relative rounded-lg shadow-sm p-4 transition hover:shadow-lg hover:-translate-y-1 active:scale-[0.98]" style={{ backgroundColor: altBg ? themeColors.cardAlt : themeColors.card }}>
       <div className="flex gap-3">
         {livro.capaUrl && !compact && (
           <img src={livro.capaUrl} alt={livro.titulo} className="w-16 h-24 object-cover rounded shadow-sm flex-shrink-0" />
@@ -1671,7 +1671,7 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
               {livro.editora && <p className="text-xs" style={{ color: themeColors.textSecondary }}>{livro.editora}</p>}
             </div>
             <div className="flex gap-1 flex-shrink-0">
-              <button onClick={() => onToggleFavorito(livro.id)} className="p-2 rounded">
+              <button onClick={() => onToggleFavorito(livro.id)} className="p-2 rounded hover:scale-110 active:scale-125 transition-transform">
                 <Heart size={16} fill={livro.favorito ? 'red' : 'none'} className={livro.favorito ? 'text-red-500' : 'text-gray-400'} />
               </button>
               <button onClick={() => onEdit(livro)} className="p-2 rounded">
@@ -1728,6 +1728,14 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
           )}
         </div>
       </div>
+      {/* Tag de prateleira - entalhe inferior esquerdo */}
+      {livro.prateleira && (
+        <div className="absolute bottom-0 left-0">
+          <div className="text-xs font-bold px-2 py-1 rounded-tr-lg" style={{ backgroundColor: '#00407a', color: 'white' }}>
+            {livro.prateleira.replace('PRATELEIRA ', '')}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -1738,7 +1746,7 @@ function LivroCardGrid({ livro, onClick, statusConfig, themeColors }) {
 
   return (
     <div
-      className="rounded-lg shadow-sm overflow-hidden transition cursor-pointer"
+      className="rounded-lg shadow-sm overflow-hidden transition cursor-pointer hover:scale-105 hover:shadow-xl"
       style={{ backgroundColor: themeColors.card }}
       onClick={() => onClick(livro)}
     >
@@ -1772,9 +1780,9 @@ function LivroCardGrid({ livro, onClick, statusConfig, themeColors }) {
 // Componente Modal
 function Modal({ children, onClose, themeColors, large = false }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center p-4 z-50 overflow-y-auto" onClick={onClose}>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center p-4 z-50 overflow-y-auto animate-fade-in" onClick={onClose}>
       <div
-        className={`rounded-lg ${large ? 'max-w-3xl' : 'max-w-2xl'} w-full my-8 p-6`}
+        className={`rounded-lg ${large ? 'max-w-3xl' : 'max-w-2xl'} w-full my-8 p-6 animate-slide-up`}
         style={{ backgroundColor: themeColors?.bgSecondary || '#ffffff' }}
         onClick={(e) => e.stopPropagation()}
       >
