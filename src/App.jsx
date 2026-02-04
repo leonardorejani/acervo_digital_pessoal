@@ -728,7 +728,7 @@ export default function BibliotecaDigital() {
   };
 
   return (
-    <div className={`h-screen flex flex-col ${fontSizeClasses[config.fontSize]}`} style={{ backgroundColor: themeColors.bg, color: themeColors.text }}>
+    <div className={`h-screen flex flex-col overflow-hidden ${fontSizeClasses[config.fontSize]}`} style={{ backgroundColor: themeColors.bg, color: themeColors.text, maxHeight: '100vh', minHeight: '100vh' }}>
 
       {/* Toast */}
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} key={toast.key} />}
