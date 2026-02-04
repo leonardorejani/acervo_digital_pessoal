@@ -1014,6 +1014,8 @@ export default function BibliotecaDigital() {
           };
 
           const handleTouchMove = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             const touch = e.touches[0];
             const el = document.elementFromPoint(touch.clientX, touch.clientY);
             if (el?.dataset?.letter) scrollToLetter(el.dataset.letter);
@@ -1022,9 +1024,16 @@ export default function BibliotecaDigital() {
           return (
             <div
               className="absolute right-0 top-0 bottom-0 flex flex-col items-center justify-center z-40 px-1 select-none pointer-events-auto"
-              style={{ touchAction: 'none' }}
+              style={{
+                touchAction: 'none',
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none',
+                overscrollBehavior: 'none'
+              }}
               onTouchMove={handleTouchMove}
               onTouchStart={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const touch = e.touches[0];
                 const el = document.elementFromPoint(touch.clientX, touch.clientY);
                 if (el?.dataset?.letter) scrollToLetter(el.dataset.letter);
