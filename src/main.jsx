@@ -22,7 +22,7 @@ if (!window.storage) {
 // Registrar Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/biblioteca-digital/sw.js')
+    navigator.serviceWorker.register('/acervo_digital_pessoal/sw.js')
       .catch(() => {
         // PWA service worker will be registered by vite-plugin-pwa
       })
