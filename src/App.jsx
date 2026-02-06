@@ -86,7 +86,7 @@ function Toast({ message, type, onClose }) {
   const Icon = type === 'success' ? CheckCircle : type === 'error' ? XCircle : type === 'warning' ? AlertTriangle : Info;
 
   return (
-    <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[100] animate-bounce" style={{ animation: 'slideDown 0.3s ease-out' }}>
+    <div className="fixed left-1/2 transform -translate-x-1/2 z-[100] animate-bounce" style={{ animation: 'slideDown 0.3s ease-out', top: 'max(env(safe-area-inset-top, 16px), 16px)' }}>
       <div className="flex items-center gap-3 px-5 py-3 rounded-xl shadow-2xl text-white min-w-[280px] max-w-[90vw]" style={{ backgroundColor: bgColor }}>
         <Icon size={20} className="flex-shrink-0" />
         <span className="text-sm font-medium flex-1">{message}</span>
@@ -1017,8 +1017,11 @@ export default function BibliotecaDigital() {
             : [...new Set(Object.keys(livrosPorPrateleira).map(p => p.replace('PRATELEIRA ', '').charAt(0)))].sort();
 
           const scrollToLetter = (letter) => {
-            const el = listRef.current?.querySelector(`#${prefix}${letter}`);
-            if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' });
+            const container = listRef.current;
+            const el = container?.querySelector(`#${prefix}${letter}`);
+            if (el && container) {
+              container.scrollTop = el.offsetTop - container.offsetTop;
+            }
           };
 
           const handleTouchMove = (e) => {
