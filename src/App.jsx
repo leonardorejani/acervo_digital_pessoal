@@ -711,6 +711,11 @@ export default function BibliotecaDigital() {
     return acc;
   }, {});
 
+  const maxCountLista = Math.max(...Object.values(groupedByLetter).map(arr => arr.length), 0);
+  const maxCountPrateleira = Math.max(...Object.values(livrosPorPrateleira).map(arr => arr.length), 0);
+  const maxCount = Math.max(maxCountLista, maxCountPrateleira);
+  const badgeMinWidth = `${String(maxCount).length * 0.6 + 3.5}em`;
+
   const temFiltrosAtivos = filtros.prateleira || filtros.categoria || filtros.status || filtros.autor || filtros.favorito;
 
   const themeColors = config.darkMode ? {
@@ -903,10 +908,10 @@ export default function BibliotecaDigital() {
                   style={{ backgroundColor: '#00407a' }}
                 >
                   <div className="flex items-center gap-2">
-                    <span>Inicial</span>
+                    <span>Título com inicial</span>
                     <span className="px-2 py-1 rounded-md text-sm font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{letter}</span>
                   </div>
-                  <span className="px-2 py-1 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{groupedByLetter[letter].length} livros</span>
+                  <span className="px-2 py-1 rounded-md text-xs font-bold text-right" style={{ backgroundColor: '#4fc3f7', color: '#00407a', minWidth: badgeMinWidth, display: 'inline-block' }}>{groupedByLetter[letter].length} livros</span>
                 </button>
                 {expandedSections[`lista-${letter}`] && (
                   <div className={`mt-1 ${densidadeClasses[config.densidade]}`}>
@@ -918,9 +923,9 @@ export default function BibliotecaDigital() {
                         onToggleFavorito={toggleFavorito}
                         onEmprestar={iniciarEmprestimo}
                         onShowHistorico={(l) => { setHistoricoLivro(l); setShowHistoricoModal(true); }}
-                        onShowNotas={(l) => { setSelectedLivroNotas(l); setShowNotasModal(true); }}
                         statusConfig={statusConfig}
                         themeColors={themeColors}
+                        viewMode="lista"
                       />
                     ))}
                   </div>
@@ -941,7 +946,7 @@ export default function BibliotecaDigital() {
                   style={{ backgroundColor: '#00407a', marginTop: pratIndex > 0 ? '16px' : '0' }}
                 >
                   <span>{prateleira}</span>
-                  <span className="px-2 py-1 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{livrosDaPrateleira.length} livros</span>
+                  <span className="px-2 py-1 rounded-md text-xs font-bold text-right" style={{ backgroundColor: '#4fc3f7', color: '#00407a', minWidth: badgeMinWidth, display: 'inline-block' }}>{livrosDaPrateleira.length} livros</span>
                 </div>
                 {/* Grid de capas - sempre visível */}
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3 pb-2">
@@ -972,10 +977,13 @@ export default function BibliotecaDigital() {
                     style={{ backgroundColor: '#00407a' }}
                   >
                     <div className="flex items-center gap-2">
-                      <span>{pratLetra}</span>
-                      <span className="px-2 py-0.5 rounded-md text-xs font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{livrosDaPrateleira.length} livros</span>
+                      <span>PRATELEIRA</span>
+                      <span className="px-2 py-1 rounded-md text-sm font-bold" style={{ backgroundColor: '#4fc3f7', color: '#00407a' }}>{pratLetra}</span>
                     </div>
-                    <ChevronDown size={16} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-1 rounded-md text-xs font-bold text-right" style={{ backgroundColor: '#4fc3f7', color: '#00407a', minWidth: badgeMinWidth, display: 'inline-block' }}>{livrosDaPrateleira.length} livros</span>
+                      <ChevronDown size={16} className={`transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                    </div>
                   </button>
                   {isExpanded && (
                     <div className="mt-2 space-y-1">
@@ -987,9 +995,9 @@ export default function BibliotecaDigital() {
                           onToggleFavorito={toggleFavorito}
                           onEmprestar={iniciarEmprestimo}
                           onShowHistorico={(l) => { setHistoricoLivro(l); setShowHistoricoModal(true); }}
-                          onShowNotas={(l) => { setSelectedLivroNotas(l); setShowNotasModal(true); }}
                           statusConfig={statusConfig}
                           themeColors={themeColors}
+                          viewMode="prateleira"
                         />
                       ))}
                     </div>
@@ -1610,7 +1618,7 @@ export default function BibliotecaDigital() {
                 onClick={() => { setDetalheLivro(null); iniciarEmprestimo(detalheLivro); }}
                 className="w-full mt-2 py-3 bg-yellow-100 text-yellow-700 rounded-lg font-medium flex items-center justify-center gap-2 transition active:scale-95"
               >
-                <BookOpen size={18} /> Emprestei pra alguém
+                <BookOpen size={18} /> Emprestar para alguém
               </button>
             )}
           </div>
@@ -1668,7 +1676,7 @@ export default function BibliotecaDigital() {
 }
 
 // Componente Card Lista
-function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNotas, onEmprestar, statusConfig, compact = false, altBg = false, themeColors }) {
+function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onEmprestar, statusConfig, compact = false, altBg = false, themeColors, viewMode }) {
   const status = statusConfig[livro.status] || statusConfig['nao-lido'];
 
   return (
@@ -1724,7 +1732,7 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
               <div className="flex flex-wrap gap-2 mt-2">
                 {livro.status !== 'emprestado' && (
                   <button onClick={() => onEmprestar(livro)} className="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded flex items-center gap-1">
-                    <BookOpen size={12} /> Emprestei
+                    <BookOpen size={12} /> Emprestar?
                   </button>
                 )}
                 {livro.historicoEmprestimos && livro.historicoEmprestimos.length > 0 && (
@@ -1732,9 +1740,6 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
                     <History size={12} /> Histórico ({livro.historicoEmprestimos.length})
                   </button>
                 )}
-                <button onClick={() => onShowNotas(livro)} className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded flex items-center gap-1">
-                  <StickyNote size={12} /> {livro.anotacoes ? 'Ver Anotações' : 'Adicionar Anotações'}
-                </button>
               </div>
 
               {livro.notas && (
@@ -1744,11 +1749,11 @@ function LivroCard({ livro, onEdit, onToggleFavorito, onShowHistorico, onShowNot
           )}
         </div>
       </div>
-      {/* Tag de prateleira - entalhe inferior direito */}
-      {livro.prateleira && (
+      {/* Tag de prateleira - entalhe inferior direito (só no modo lista) */}
+      {livro.prateleira && viewMode === 'lista' && (
         <div className="absolute bottom-0 right-0">
-          <div className="text-xs font-bold px-2 py-1 rounded-tl-lg" style={{ backgroundColor: '#00407a', color: 'white' }}>
-            {livro.prateleira.replace('PRATELEIRA ', '')}
+          <div className="text-sm font-bold px-3 py-1.5 rounded-tl-lg" style={{ backgroundColor: '#00407a', color: 'white' }}>
+            {livro.prateleira}
           </div>
         </div>
       )}
