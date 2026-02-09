@@ -1,6 +1,6 @@
 # Acervo Digital Pessoal
 
-# Link da biblioteca: https://leonardorejani.github.io/repo-teste/
+# Link da biblioteca: https://leonardorejani.github.io/acervo_digital_pessoal/
 
 PWA (Progressive Web App) para gerenciamento de acervo pessoal de livros. Organize, cataloge e acompanhe suas leituras diretamente do navegador ou como app instalado no celular — funciona 100% offline.
 
